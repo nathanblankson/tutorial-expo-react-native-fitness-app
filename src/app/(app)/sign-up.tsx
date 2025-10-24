@@ -1,41 +1,68 @@
-import GoogleSignIn from '@/app/components/GoogleSignIn';
-import { useSignIn } from '@clerk/clerk-expo'
+import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'expo-modules-core';
 import { Link, useRouter } from 'expo-router'
+import * as React from 'react';
 import { useState } from 'react';
 import { KeyboardAvoidingView, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
-export default function SignIn() {
-    const { signIn, setActive, isLoaded } = useSignIn()
+export default function SignUp() {
+    const { isLoaded, signUp, setActive } = useSignUp()
     const router = useRouter()
 
     const [isLoading, setIsLoading] = useState(false)
     const [emailAddress, setEmailAddress] = useState('')
     const [password, setPassword] = useState('')
+    const [pendingVerification, setPendingVerification] = useState(false)
+    const [code, setCode] = useState('')
 
-    // Handle the submission of the sign-in form
-    const onSignInPress = async () => {
+    // Handle submission of sign-up form
+    const onSignUpPress = async () => {
         if (!isLoaded) {
             return
         }
 
-        // Start the sign-in process using the email and password provided
+        // Start sign-up process using email and password provided
         try {
-            const signInAttempt = await signIn.create({
-                identifier: emailAddress,
+            await signUp.create({
+                emailAddress,
                 password,
             })
 
-            // If sign-in process is complete, set the created session as active
+            // Send user an email with verification code
+            await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+
+            // Set 'pendingVerification' to true to display second form
+            // and capture OTP code
+            setPendingVerification(true)
+        } catch (err) {
+            // See https://clerk.com/docs/guides/development/custom-flows/error-handling
+            // for more info on error handling
+            console.error(JSON.stringify(err, null, 2))
+        }
+    }
+
+    // Handle submission of verification form
+    const onVerifyPress = async () => {
+        if (!isLoaded) {
+            return
+        }
+
+        try {
+            // Use the code the user provided to attempt verification
+            const signUpAttempt = await signUp.attemptEmailAddressVerification({
+                code,
+            })
+
+            // If verification was completed, set the session to active
             // and redirect the user
-            if (signInAttempt.status === 'complete') {
-                await setActive({ session: signInAttempt.createdSessionId })
+            if (signUpAttempt.status === 'complete') {
+                await setActive({ session: signUpAttempt.createdSessionId })
                 router.replace('/')
             } else {
-                // If the status isn't complete, check why. User might need to
+                // If the status is not complete, check why. User may need to
                 // complete further steps.
-                console.error(JSON.stringify(signInAttempt, null, 2))
+                console.error(JSON.stringify(signUpAttempt, null, 2))
             }
         } catch (err) {
             // See https://clerk.com/docs/guides/development/custom-flows/error-handling
@@ -44,8 +71,24 @@ export default function SignIn() {
         }
     }
 
+    if (pendingVerification) {
+        return (
+            <>
+                <Text>Verify your email</Text>
+                <TextInput
+                    value={code}
+                    placeholder="Enter your verification code"
+                    onChangeText={(code) => setCode(code)}
+                />
+                <TouchableOpacity onPress={onVerifyPress}>
+                    <Text>Verify</Text>
+                </TouchableOpacity>
+            </>
+        )
+    }
+
     return (
-        <SafeAreaView className="flex-1">
+        <SafeAreaView className="flex-1 bg-gray-50">
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 className="flex-1"
@@ -59,17 +102,17 @@ export default function SignIn() {
                                 <Ionicons name="fitness" size={40} color="white"/>
                             </View>
                             <Text className="text-3xl font-bold text-gray-900 mb-2">
-                                FitTracker
+                                Join FitTracker
                             </Text>
                             <Text className="text-lg text-gray-600 text-center">
-                                Track your fitness journey{'\n'}and reach your goals
+                                Start your fitness journey{'\n'}and achieve your goals
                             </Text>
                         </View>
 
-                        {/* Sign In Form */}
+                        {/* Sign Up Form */}
                         <View className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
                             <Text className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                                Welcome Back
+                                Create Your Account
                             </Text>
 
                             {/* Email Input */}
@@ -108,57 +151,55 @@ export default function SignIn() {
                                         editable={!isLoading}
                                     />
                                 </View>
-                            </View>
-                        </View>
-
-                        {/* Sign In Button */}
-                        <TouchableOpacity
-                            onPress={onSignInPress}
-                            disabled={isLoading}
-                            className={
-                                `rounded-xl py-4 shadow-sm mb-4 ${isLoading ? 'bg-gray-400' : 'bg-blue-600'}`
-                            }
-                            activeOpacity={0.8}
-                        >
-                            <View className="flex-row items-center justify-center">
-                                {
-                                    isLoading ? (
-                                        <Ionicons name="refresh" size={20} color="white"/>
-                                    ) : (
-                                        <Ionicons name="log-in-outline" size={20} color="white"/>
-                                    )
-                                }
-                                <Text className="text-white font-semibold text-lg ml-2">
-                                    {isLoading ? 'Signing In...' : 'Sign In'}
+                                <Text className="text-xs text-gray-500 mt-1">
+                                    Must be at least 8 characters
                                 </Text>
                             </View>
-                        </TouchableOpacity>
 
-                        {/* Divider */}
-                        <View className="flex-row items-center my-4">
-                            <View className="flex-1 h-px bg-gray-200"/>
-                            <Text className="px-4 text-gray-500 text-sm">or</Text>
-                            <View className="flex-1 h-px bg-gray-200"/>
-                        </View>
+                            {/* Sign Up Button */}
+                            <TouchableOpacity
+                                onPress={onSignUpPress}
+                                disabled={isLoading}
+                                className={
+                                    `rounded-xl py-4 shadow-sm mb-4 ${isLoading ? 'bg-gray-400' : 'bg-blue-600'}`
+                                }
+                                activeOpacity={0.8}
+                            >
+                                <View className="flex-row items-center justify-center">
+                                    {
+                                        isLoading ? (
+                                            <Ionicons name="refresh" size={20} color="white"/>
+                                        ) : (
+                                            <Ionicons name="log-in-outline" size={20} color="white"/>
+                                        )
+                                    }
+                                    <Text className="text-white font-semibold text-lg ml-2">
+                                        {isLoading ? 'Creating Account...' : 'Create Account'}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
 
-                        {/* Google Sign In Button */}
-                        <GoogleSignIn/>
+                            {/* Terms */}
+                            <Text className="text-xs text-gray-500 text-center mb-4">
+                                By signing up, you agree to our Terms of Service and Privacy Policy
+                            </Text>
 
-                        {/* Sign Up Link */}
-                        <View className="flex-row justify-center items-center mt-4">
-                            <Text className="text-gray-600">Don't have an account? </Text>
-                            <Link href="/sign-up" asChild>
-                                <TouchableOpacity>
-                                    <Text className="text-blue-600 font-semibold">Sign Up</Text>
-                                </TouchableOpacity>
-                            </Link>
+                            {/* Sign In Link */}
+                            <View className="flex-row justify-center items-center mt-4">
+                                <Text className="text-gray-600">Already have an account? </Text>
+                                <Link href="/sign-in" asChild>
+                                    <TouchableOpacity>
+                                        <Text className="text-blue-600 font-semibold">Sign In</Text>
+                                    </TouchableOpacity>
+                                </Link>
+                            </View>
                         </View>
                     </View>
 
                     {/* Footer */}
                     <View className="pb-6">
                         <Text className="text-center text-gray-500 text-sm">
-                            Start your fitness journey today
+                            Ready to transform your fitness?
                         </Text>
                     </View>
                 </View>
