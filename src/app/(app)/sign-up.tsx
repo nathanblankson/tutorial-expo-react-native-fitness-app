@@ -4,7 +4,7 @@ import { Platform } from 'expo-modules-core';
 import { Link, useRouter } from 'expo-router'
 import * as React from 'react';
 import { useState } from 'react';
-import { KeyboardAvoidingView, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 export default function SignUp() {
     const { isLoaded, signUp, setActive } = useSignUp()
@@ -21,6 +21,13 @@ export default function SignUp() {
         if (!isLoaded) {
             return
         }
+
+        if (!emailAddress || !password) {
+            Alert.alert('Error', 'Please fill in all fields.')
+            return
+        }
+
+        setIsLoading(true)
 
         // Start sign-up process using email and password provided
         try {
@@ -39,6 +46,8 @@ export default function SignUp() {
             // See https://clerk.com/docs/guides/development/custom-flows/error-handling
             // for more info on error handling
             console.error(JSON.stringify(err, null, 2))
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -47,6 +56,13 @@ export default function SignUp() {
         if (!isLoaded) {
             return
         }
+
+        if (!code) {
+            Alert.alert('Error', 'Please enter the verification code.')
+            return
+        }
+
+        setIsLoading(true)
 
         try {
             // Use the code the user provided to attempt verification
@@ -68,6 +84,8 @@ export default function SignUp() {
             // See https://clerk.com/docs/guides/development/custom-flows/error-handling
             // for more info on error handling
             console.error(JSON.stringify(err, null, 2))
+        } finally {
+            setIsLoading(false)
         }
     }
 

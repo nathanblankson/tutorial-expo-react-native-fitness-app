@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'expo-modules-core';
 import { Link, useRouter } from 'expo-router'
 import { useState } from 'react';
-import { KeyboardAvoidingView, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 export default function SignIn() {
     const { signIn, setActive, isLoaded } = useSignIn()
@@ -19,6 +19,13 @@ export default function SignIn() {
         if (!isLoaded) {
             return
         }
+
+        if (!emailAddress || !password) {
+            Alert.alert('Error', 'Please fill in all fields.')
+            return
+        }
+
+        setIsLoading(true)
 
         // Start the sign-in process using the email and password provided
         try {
@@ -41,6 +48,8 @@ export default function SignIn() {
             // See https://clerk.com/docs/guides/development/custom-flows/error-handling
             // for more info on error handling
             console.error(JSON.stringify(err, null, 2))
+        } finally {
+            setIsLoading(false)
         }
     }
 
