@@ -89,6 +89,7 @@ export default function SignUp() {
         }
     }
 
+    // TODO: NB - the input looks a little off, needs fixing
     if (pendingVerification) {
         return (
             <SafeAreaView className="flex-1 bg-gray-50">
