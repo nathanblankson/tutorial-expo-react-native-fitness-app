@@ -1,4 +1,3 @@
-import { getDifficultyColor, getDifficultyText } from '@/app/utils/exercise.util';
 import { client, urlFor } from '@/lib/sanity/client';
 import { Exercise } from '@/lib/sanity/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +16,7 @@ import {
     View
 } from 'react-native'
 import Markdown from 'react-native-markdown-display';
+import { getDifficultyColor, getDifficultyText } from '../../../lib/utils/exercise.util';
 
 const singleExerciseQuery = defineQuery(
     `*[_type == "exercise" && _id == $id][0]`
@@ -71,7 +71,7 @@ export default function ExerciseDetail() {
                     exerciseName: exercise.name
                 }),
             });
-            
+
             if (!response.ok) {
                 throw new Error('Failed to fetch AI guidance');
             }

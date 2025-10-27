@@ -1,8 +1,8 @@
-import { getDifficultyColor, getDifficultyText } from '@/app/utils/exercise.util';
 import { urlFor } from '@/lib/sanity/client';
 import { Exercise } from '@/lib/sanity/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, Text, TouchableOpacity, View } from 'react-native'
+import { getDifficultyColor, getDifficultyText } from '../../../lib/utils/exercise.util';
 
 export interface ExerciseCardProps {
     item: Exercise;
