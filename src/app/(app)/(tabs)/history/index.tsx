@@ -14,7 +14,7 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { formatDuration } from '../../../../lib/utils/date.util';
+import { formatDuration } from '../../../../../lib/utils/date.util';
 
 export const getWorkoutsQuery =
     defineQuery(`*[_type == "workout" && userId == $userId] | order(date desc) {
