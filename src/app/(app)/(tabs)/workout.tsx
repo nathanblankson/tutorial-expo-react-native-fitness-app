@@ -1,7 +1,7 @@
 import React from 'react'
 import { SafeAreaView, Text } from 'react-native';
 
-function Workout() {
+export default function Workout() {
     return (
         <SafeAreaView className="flex-1">
             <Text>Workout</Text>
@@ -9,4 +9,3 @@ function Workout() {
     )
 }
 
-export default Workout

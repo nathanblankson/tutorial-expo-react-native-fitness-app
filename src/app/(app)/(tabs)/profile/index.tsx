@@ -2,7 +2,7 @@ import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
-function Profile() {
+export default function Profile() {
     const { signOut } = useAuth();
 
     const handleSignOut = () => {
@@ -40,6 +40,3 @@ function Profile() {
         </SafeAreaView>
     );
 }
-
-
-export default Profile;

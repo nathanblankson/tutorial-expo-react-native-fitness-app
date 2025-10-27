@@ -2,7 +2,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react'
 
-function Layout() {
+export default function Layout() {
     return (
         <Tabs screenOptions={{ headerShown: false }}>
             <Tabs.Screen
@@ -67,5 +67,3 @@ function Layout() {
         </Tabs>
     )
 }
-
-export default Layout

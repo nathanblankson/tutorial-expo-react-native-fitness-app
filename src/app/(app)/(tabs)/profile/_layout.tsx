@@ -1,8 +1,7 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 
-function Layout() {
+export default function Layout() {
     return <Stack screenOptions={{ headerShown: false }}/>;
 }
 
-export default Layout;

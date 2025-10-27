@@ -2,13 +2,10 @@ import { useAuth } from '@clerk/clerk-expo';
 import { Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
-const Layout = () => {
+export default function Layout() {
     const {
         isLoaded,
         isSignedIn,
-        userId,
-        sessionId,
-        getToken,
     } = useAuth();
 
     if (!isLoaded) {
@@ -32,4 +29,3 @@ const Layout = () => {
         </Stack>
     )
 }
-export default Layout

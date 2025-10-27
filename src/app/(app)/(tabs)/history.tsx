@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, Text } from 'react-native';
 
-function History() {
+export default function History() {
     return (
         <SafeAreaView className="flex flex-1">
             <Text>History</Text>
@@ -9,4 +9,3 @@ function History() {
     );
 }
 
-export default History;
