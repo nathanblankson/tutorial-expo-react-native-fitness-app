@@ -54,6 +54,10 @@ export default function ExerciseDetail() {
         void fetchExercise();
     }, [id]);
 
+    const getAiGuidance = async () => {
+        
+    }
+
     if (loading) {
         return (
             <SafeAreaView className="flex-1 bg-white">
@@ -164,6 +168,37 @@ export default function ExerciseDetail() {
                             </TouchableOpacity>
                         </View>
                     )}
+
+                    {/* TODO: AI Guidance */}
+
+                    {/* Action Buttons */}
+                    <View className="mt-8 gap-2">
+                        {/* AI Coach Button */}
+                        <TouchableOpacity
+                            className={`rounded-xl py-4 items-center ${aiLoading ? 'bg-gray-400' : aiGuidance ? 'bg-green-500' : 'bg-blue-500'}`}
+                            onPress={getAiGuidance}
+                            disabled={aiLoading}>
+                            {aiLoading ? (
+                                <View className="flex-row items-center">
+                                    <ActivityIndicator size="small" color="white"/>
+                                    <Text className="text-white font-bold text-lg ml-2">
+                                        Loading...
+                                    </Text>
+                                </View>
+                            ) : (
+                                <Text className="text-white font-bold text-lg">
+                                    {aiGuidance ? 'Refresh AI Guidance' : 'Get AI Guidance on Form & Technique'}
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+
+                        {/* Close Button */}
+                        <TouchableOpacity
+                            className="bg-gray-200 rounded-xl py-4 items-center"
+                            onPress={() => router.back()}>
+                            <Text className="text-gray-800 font-bold text-lg">Close</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
