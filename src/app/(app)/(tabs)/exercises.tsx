@@ -4,7 +4,7 @@ import { Exercise } from '@/lib/sanity/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { defineQuery } from 'groq';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, RefreshControl, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export const exercisesQuery = defineQuery(`*[_type == "exercise"] {
@@ -28,6 +28,17 @@ export default function Exercises() {
             console.error('Error fetching exercises:', error);
         }
     }
+
+    useEffect(() => {
+        void fetchExercises();
+    }, [])
+
+    useEffect(() => {
+        const filtered = exercises.filter((exercise) => {
+            return exercise.name.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+        setFilteredExercises(filtered);
+    }, [searchQuery, exercises]);
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -68,14 +79,14 @@ export default function Exercises() {
 
             {/* Exercise List */}
             <FlatList
-                data={[]}
-                keyExtractor={(item) => item.id}
+                data={filteredExercises}
+                keyExtractor={(item) => item._id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ padding: 24 }}
                 renderItem={({ item }) => (
                     <ExerciseCard
                         item={item}
-                        onPress={() => router.push(`/exercise-detail?id=${item.id}`)}
+                        onPress={() => router.push(`/exercise-detail?id=${item._id}`)}
                     />
                 )}
                 refreshControl={
