@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { defineQuery } from 'groq';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { formatDuration } from '../../../../../lib/utils/date.util';
 
 const getWorkoutRecordQuery =
@@ -170,6 +170,55 @@ export default function WorkoutRecord() {
     const { volume, unit } = getTotalVolume();
 
     const handleDeleteWorkout = async () => {
+        Alert.alert(
+            'Delete Workout',
+            'Are you sure you want to delete this workout? This action cannot be undone.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel'
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: deleteWorkout,
+                }
+            ]
+        )
+    }
+
+    const deleteWorkout = async () => {
+        if (!workout) {
+            return;
+        }
+
+        setDeleting(true);
+
+        try {
+            // TODO: NB - we might wanna change this to use a DELETE method, for now it's all just template code
+            const response = await fetch('/api/delete-workout', {
+                method: 'POST',
+                body: JSON.stringify({ workoutId }),
+            });
+
+            // TODO: NB - look into how we can handle this throw caught logic better
+            if (!response.ok) {
+                throw new Error('Failed to delete workout');
+            }
+
+            router.replace('/(app)/(tabs)/history?refresh=true');
+        } catch (error) {
+            console.error('Error deleting workout:', error);
+            Alert.alert(
+                'Error',
+                'Failed to delete workout. Please try again',
+                [
+                    { text: 'OK' }
+                ]
+            );
+        } finally {
+            setDeleting(false);
+        }
     }
 
     return (
