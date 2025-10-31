@@ -104,7 +104,7 @@ export default function History() {
         return formatDuration(seconds)
     }
 
-    const getTotalStats = (workout: GetWorkoutsQueryResult[number]) => {
+    const getTotalSets = (workout: GetWorkoutsQueryResult[number]) => {
         return (
             workout.exercises.reduce((total, exercise) => {
                 return total + (exercise.sets?.length || 0);
@@ -213,7 +213,7 @@ export default function History() {
                                         </View>
                                         <View className="bg-gray-100 rounded-lg px-3 py-2">
                                             <Text className="text-sm font-medium text-gray-700">
-                                                {getTotalStats(workout)} sets
+                                                {getTotalSets(workout)} sets
                                             </Text>
                                         </View>
                                     </View>
