@@ -153,9 +153,7 @@ export default function ActiveWorkout() {
                 method: 'POST',
                 body: JSON.stringify({ workoutData }),
             });
-
-            console.log('Workout save result:', result);
-
+            
             if (!result.ok) {
                 throw new Error('Failed to save workout to database');
             }
