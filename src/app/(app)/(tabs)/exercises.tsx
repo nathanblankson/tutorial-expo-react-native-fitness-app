@@ -5,7 +5,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { defineQuery } from 'groq';
 import { useEffect, useState } from 'react';
-import { FlatList, RefreshControl, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+    FlatList,
+    RefreshControl,
+    SafeAreaView,
+    StatusBar,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 
 export const exercisesQuery = defineQuery(`*[_type == "exercise"] {
    ... 
@@ -48,6 +57,9 @@ export default function Exercises() {
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
+            {/* TODO: NB - investigate status bar usages */}
+            <StatusBar barStyle="dark-content"/>
+
             {/* Header */}
             <View className="px-6 py-4 bg-white border-b border-gray-200">
                 <Text className="text-2xl font-bold text-gray-900">
