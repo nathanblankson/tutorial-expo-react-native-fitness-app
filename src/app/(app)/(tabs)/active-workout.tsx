@@ -153,7 +153,7 @@ export default function ActiveWorkout() {
                 method: 'POST',
                 body: JSON.stringify({ workoutData }),
             });
-            
+
             if (!result.ok) {
                 throw new Error('Failed to save workout to database');
             }
@@ -374,6 +374,7 @@ export default function ActiveWorkout() {
                     </View>
                 )}
 
+                {/* TODO: NB - investigate keyboard avoiding view */}
                 <KeyboardAvoidingView
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     className="flex-1">
