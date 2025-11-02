@@ -54,8 +54,8 @@ export const workout = defineType({
                             of: [
                                 defineArrayMember({
                                     type: 'object',
-                                    name: 'exerciseSet',
-                                    title: 'Exercise Set',
+                                    name: 'set',
+                                    title: 'Set',
                                     fields: [
                                         defineField({
                                             name: 'reps',
